@@ -1,4 +1,5 @@
 ﻿#include "Board.h"
+#include "Ship.h"
 
 void Board::Print()
 {
@@ -13,31 +14,21 @@ void Board::Print()
 	std::cout << "KONIEC PLANSZY--------------------------------\n";
 }
 
-bool Board::SetShip(std::pair<int, int> start,std::pair<int,int> end)
+bool Board::SetShip(Ship x)
 {
 	int i = 0, j = 0;
 
-	bool isHorizontal = true;
-	if (start.first != end.first && end.second != start.second)
-	{
-		std::cout << "Statek ulozony po skosie!";
-		return false;
-	}
-	else if (start.second == end.second)
-	{
-		isHorizontal = false;
-	}
-
-	while (i < start.first)i++;
-	while (j < start.second)j++;
-
-	char shipType = 'd';
 	
-	if (isHorizontal)
+
+	while (i < x.start.first)i++;
+	while (j < x.start.second)j++;
+
+	char shipType = x.dlugosc+'0';
+	
+	if (x.isHorizontal)
 	{
-		shipType = std::abs(start.second - end.second+1)+'0';
 		//F[i][j].state = shipType;
-		while (j > end.second)
+		while (j > x.end.second)
 		{
 			if (F[i][j].IsFree())
 			{
@@ -46,7 +37,7 @@ bool Board::SetShip(std::pair<int, int> start,std::pair<int,int> end)
 			else
 			{
 				std::cout << "Tutaj stoi już inny statek!\n";
-				while (j <= start.second)
+				while (j <= x.start.second)
 				{
 					F[i][j].state = '*';
 					j++;
@@ -55,7 +46,7 @@ bool Board::SetShip(std::pair<int, int> start,std::pair<int,int> end)
 			}
 			j--;
 		}
-		while (j < end.second)
+		while (j < x.end.second)
 		{
 			if (F[i][j].IsFree())
 			{
@@ -64,7 +55,7 @@ bool Board::SetShip(std::pair<int, int> start,std::pair<int,int> end)
 			else
 			{
 				std::cout << "Tutaj stoi już inny statek!\n";
-				while (j >= start.second)
+				while (j >= x.start.second)
 				{
 					F[i][j].state = '*';
 					j--;
@@ -77,9 +68,8 @@ bool Board::SetShip(std::pair<int, int> start,std::pair<int,int> end)
 	}
 	else 
 		{
-			shipType = std::abs(start.first - end.first+1) + '0';
 			//F[i][j].state = shipType;
-			while (i > end.first)
+			while (i > x.end.first)
 			{
 				if (F[i][j].IsFree())
 				{
@@ -88,7 +78,7 @@ bool Board::SetShip(std::pair<int, int> start,std::pair<int,int> end)
 				else
 				{
 					std::cout << "Tutaj stoi już inny statek!\n";
-					while (i <= start.first)
+					while (i <= x.start.first)
 					{
 						F[i][j].state = '*';
 						i++;
@@ -97,7 +87,7 @@ bool Board::SetShip(std::pair<int, int> start,std::pair<int,int> end)
 				}
 				i--;
 			}
-			while (i < end.first)
+			while (i < x.end.first)
 			{
 				if (F[i][j].IsFree())
 				{
@@ -106,7 +96,7 @@ bool Board::SetShip(std::pair<int, int> start,std::pair<int,int> end)
 				else
 				{
 					std::cout << "Tutaj stoi już inny statek!\n";
-					while (i >= start.first)
+					while (i >= x.start.first)
 					{
 						F[i][j].state = '*';
 						i--;

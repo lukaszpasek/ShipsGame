@@ -1,5 +1,6 @@
 #pragma once
 #include "Field.h"
+#include "Ship.h"
 #include <vector>
 #include <iostream>
 class Board
@@ -12,6 +13,7 @@ class Board
 		for (int i = 0; i < 30; i++) F[i].resize(30);
 	}
 	void Print();
-	bool SetShip(std::pair<int, int> point, std::pair<int, int> end);
+	bool SetShip(Ship x);
+	
 };
 

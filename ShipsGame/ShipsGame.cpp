@@ -2,14 +2,49 @@
 //
 
 #include <iostream>
+#include <vector>
 #include "Board.h"
+#include "Ship.h"
 
 int main()
 {
-    std::cout << "Hello World!\n";
+    setlocale(LC_ALL, "pl_PL");
+    std::cout << "Witamy w grze statki. Wybierz statki do gry!\n";
+    int dzialanie = -1;
+    std::vector<std::vector<Ship>> Ships(6);
+    while (dzialanie != 0)
+    {
+        std::cout << "Gotowych do gry:\n" << Ships[2].size() << ": statków 2 masztowych\n";
+        std::cout << Ships[3].size() << ": statków 3 masztowych\n";
+        std::cout << Ships[4].size() << ": statków 4 masztowych\n";
+        std::cout << Ships[5].size() << ": statków 5 masztowych\n";
+        std::cout << "----------------------->\n";
+        std::cout << "Wybierz dzialanie:\n";
+        std::cout << "  2->Dodaj 2 masztowiec\n";
+        std::cout << "  3->Dodaj 3 masztowiec\n";
+        std::cout << "  4->Dodaj 4 masztowiec\n";
+        std::cout << "  5->Dodaj 5 masztowiec\n";
+        std::cout << "  0->Zacznij gre!\n";
+        std::cin >> dzialanie;
+        switch (dzialanie) {
+        case 2:
+            Ships[2].push_back(Ship(2));
+            break;
+        case 3:
+            Ships[3].push_back(Ship(3));
+            break;
+        case 4:
+            Ships[4].push_back(Ship(4));
+            break;
+        case 5:
+            Ships[5].push_back(Ship(5));
+            break;
+        }
+    }
+
     Board B;
     B.Print();
-    B.SetShip({ 10,2 }, {0,2});
+    //B.SetShip({ 6,2 }, {0,2});
     B.Print();
 }
 
