@@ -14,16 +14,12 @@ int main()
     std::vector<std::vector<Ship>> Ships(6);
     while (dzialanie != 0)
     {
-        std::cout << "Gotowych do gry:\n" << Ships[2].size() << ": statków 2 masztowych\n";
-        std::cout << Ships[3].size() << ": statków 3 masztowych\n";
-        std::cout << Ships[4].size() << ": statków 4 masztowych\n";
-        std::cout << Ships[5].size() << ": statków 5 masztowych\n";
-        std::cout << "----------------------->\n";
-        std::cout << "Wybierz dzialanie:\n";
-        std::cout << "  2->Dodaj 2 masztowiec\n";
-        std::cout << "  3->Dodaj 3 masztowiec\n";
-        std::cout << "  4->Dodaj 4 masztowiec\n";
-        std::cout << "  5->Dodaj 5 masztowiec\n";
+        std::cout << "------------------------------------------->\n";
+        std::cout << "Wybierz dzialanie:            Gotowych do gry:\n";
+        std::cout << "  2->Dodaj 2 masztowiec       "<< Ships[2].size() << ": statków 2 masztowych\n";
+        std::cout << "  3->Dodaj 3 masztowiec       "<< Ships[3].size() << ": statków 3 masztowych\n";
+        std::cout << "  4->Dodaj 4 masztowiec       "<< Ships[4].size() << ": statków 4 masztowych\n";
+        std::cout << "  5->Dodaj 5 masztowiec       "<< Ships[5].size() << ": statków 5 masztowych\n";
         std::cout << "  0->Zacznij gre!\n";
         std::cin >> dzialanie;
         switch (dzialanie) {
@@ -43,9 +39,40 @@ int main()
     }
 
     Board B;
+    Board A;
     B.Print();
-    //B.SetShip({ 6,2 }, {0,2});
+    /*for (int j = 2; j <= 5; j++)
+    {
+        for (int i = 0; i < Ships[j].size(); i++)
+        {
+            while(!B.SetShip(Ships[j][i]));
+        }
+    }*/
+    B.SetShipsAutomatically(Ships);
+    A.SetShipsAutomatically(Ships);
+    std::cout << "Plansza gracza B:------------------------------------------->\n";
     B.Print();
+    std::cout << "Plansza gracza A:------------------------------------------->\n";
+    A.Print();
+
+    int czyjaKolej = 1;
+    bool isSink = false;
+    A.Id = 'A';
+    B.Id = 'B';
+    while (!isSink)
+    {
+        if (czyjaKolej>0)
+        {
+            //B.PrintOpponent();
+            while (A.Shot());
+        }
+        else
+        {
+            //A.PrintOpponent();
+            while (B.Shot());
+        }
+        czyjaKolej = -czyjaKolej;
+    }
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu

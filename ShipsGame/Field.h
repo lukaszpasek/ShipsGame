@@ -1,7 +1,10 @@
 #pragma once
+#include "Ship.h"
 class Field
 {
-	public: char state;
+	public: 
+	char state;
+	Ship* shipStayed;
 	Field()
 	{
 		state = '*';
