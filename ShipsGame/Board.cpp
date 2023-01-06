@@ -36,46 +36,46 @@ void Board::PrintOpponent()
 	//std::cout << "KONIEC PLANSZY------------------------------------------->\n";
 }
 
-bool Board::SetShip(Ship &x)
+bool Board::SetShip(Ship &y)
 {
 	setlocale(LC_ALL, "pl_PL");
 	int i = 0, j = 0;
-	
-	while (x.start.first == -1 || x.start.second == -1)
+	Ship* x = new Ship(y);
+	while (x->start.first == -1 || x->start.second == -1)
 	{
-		std::cout << "Podaj wspolrzedne poczatku " << x.dlugosc << " masztowego statku(x, y):\n";
-		std::cin >> x.start.first >> x.start.second;
+		std::cout << "Podaj wspolrzedne poczatku " << x->dlugosc << " masztowego statku(x, y):\n";
+		std::cin >> x->start.first >> x->start.second;
 		std::cout << "Czy ustawic poziomo?(1->TAK,0->NIE)\n";
-		std::cin >> x.isHorizontal;
-		if (x.isHorizontal && x.start.first + x.dlugosc >= F.size())
+		std::cin >> x->isHorizontal;
+		if (x->isHorizontal && x->start.first + x->dlugosc >= F.size())
 		{
-			x.start.first = -1;
+			x->start.first = -1;
 			std::cout << "Proba postawienia statku poza plansza!\n";
 			continue;
 		}
-		else if(!x.isHorizontal && x.start.second + x.dlugosc >= F.size())
+		else if(!x->isHorizontal && x->start.second + x->dlugosc >= F.size())
 		{
-			x.start.second = -1;
+			x->start.second = -1;
 			std::cout << "Proba postawienia statku poza plansza!\n";
 			continue;
 		}
 	}
 
-	while (i < x.start.first)i++;
-	while (j < x.start.second)j++;
+	while (i < x->start.first)i++;
+	while (j < x->start.second)j++;
 
-	char shipType = x.dlugosc+'0';
+	char shipType = x->dlugosc+'0';
 	
-	if (x.isHorizontal)
+	if (x->isHorizontal)
 	{
-		x.end.second = x.start.second + x.dlugosc-1;
+		x->end.second = x->start.second + x->dlugosc-1;
 
-		while (j <= x.end.second)
+		while (j <= x->end.second)
 		{
 			if (j >= F.size())
 			{
 				std::cout << "Tutaj konczy sie plansza!\n";
-				while (--j >= x.start.second)
+				while (--j >= x->start.second)
 				{
 					F[i][j].state = '*';
 					F[i][j].shipStayed = new Ship();
@@ -86,12 +86,12 @@ bool Board::SetShip(Ship &x)
 			if (F[i][j].IsFree())
 			{
 				F[i][j].state = shipType;
-				F[i][j].shipStayed = &x;
+				F[i][j].shipStayed = x;
 			}
 			else
 			{
 				std::cout << "Tutaj stoi juz inny statek!\n";
-				while (--j >= x.start.second)
+				while (--j >= x->start.second)
 				{
 					F[i][j].state = '*';
 					F[i][j].shipStayed = new Ship();
@@ -105,14 +105,14 @@ bool Board::SetShip(Ship &x)
 	}
 	else 
 		{
-			x.end.first = x.start.first + x.dlugosc-1;
+			x->end.first = x->start.first + x->dlugosc-1;
 
-			while (i <= x.end.first)
+			while (i <= x->end.first)
 			{
 				if (i >= F.size())
 				{
 					std::cout << "Tutaj konczy sie plansza!\n";
-					while (--i >= x.start.first)
+					while (--i >= x->start.first)
 					{
 						F[i][j].state = '*';
 						F[i][j].shipStayed = new Ship();
@@ -123,12 +123,12 @@ bool Board::SetShip(Ship &x)
 				if (F[i][j].IsFree())
 				{
 					F[i][j].state = shipType;
-					F[i][j].shipStayed = &x;
+					F[i][j].shipStayed = x;
 				}
 				else
 				{
 					std::cout << "Tutaj stoi juz inny statek!\n";
-					while (--i >= x.start.first)
+					while (--i >= x->start.first)
 					{
 						F[i][j].state = '*';
 						F[i][j].shipStayed = new Ship();
@@ -195,6 +195,63 @@ bool Board::Shot()
 		}
 		else std::cout << "Trafiony!\n";
 
+		return true;
+	}
+}
+
+bool Board::ShotAutomatically()
+{
+	PrintOpponent();
+	std::pair<int, int> point = { -1,-1 };
+	if (nextShipIsNeighbour)
+	{
+		if (lastShot.top().first < rozmiarPlanszy-1 && F[lastShot.top().first + 1][lastShot.top().second].state != 'o' && F[lastShot.top().first + 1][lastShot.top().second].state != 'X') {point = lastShot.top();point.first++; }
+		else if (lastShot.top().first>0 && F[lastShot.top().first -1][lastShot.top().second].state != 'o' && F[lastShot.top().first - 1][lastShot.top().second].state != 'X') {point = lastShot.top();point.first--; }
+		else if (lastShot.top().second < rozmiarPlanszy-1 && F[lastShot.top().first][lastShot.top().second+1].state != 'o' && F[lastShot.top().first][lastShot.top().second+1].state != 'X') {point = lastShot.top();point.second++; }
+		else if (lastShot.top().second>0 && F[lastShot.top().first][lastShot.top().second-1].state != 'o' && F[lastShot.top().first][lastShot.top().second-1].state != 'X') {point = lastShot.top();point.second--; }
+		else
+		{
+			lastShot.pop();
+			if (lastShot.empty()) nextShipIsNeighbour = false;
+			point.first = rand() % rozmiarPlanszy;
+			point.second = rand() % rozmiarPlanszy;
+		}
+	}
+	else 
+	{
+		point.first = rand() % rozmiarPlanszy;
+		point.second = rand() % rozmiarPlanszy;
+	}
+	while (F[point.first][point.second].state == 'o' || F[point.first][point.second].state == 'X')
+	{
+		point.first = rand() % rozmiarPlanszy;
+		point.second = rand() % rozmiarPlanszy;
+	}
+
+	if (F[point.first][point.second].state == '*')
+	{
+		
+		std::cout << "Pudlo!\n";
+		S[point.first][point.second].state = 'o';
+		F[point.first][point.second].state = 'o';
+		//nextShipIsNeighbour = false;
+		return false;
+	}
+	else
+	{
+		lastShot.push(point);
+		S[point.first][point.second].state = 'X';
+		F[point.first][point.second].state = 'X';
+		F[point.first][point.second].shipStayed->howMuchLive--;
+		std::cout << F[point.first][point.second].shipStayed->howMuchLive <<"\n";
+		if (F[point.first][point.second].shipStayed->howMuchLive == 0)
+		{
+			std::cout << "Trafiony zatopiony!\n";
+			nextShipIsNeighbour = false;
+			this->SinkedShips++;
+		}
+		else std::cout << "Trafiony!\n";
+		nextShipIsNeighbour = true;
 		return true;
 	}
 }

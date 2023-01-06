@@ -11,6 +11,7 @@ int main()
     setlocale(LC_ALL, "pl_PL");
     std::cout << "Witamy w grze statki. Wybierz statki do gry!\n";
     int dzialanie = -1;
+    int howMuchShips = 0;
     std::vector<std::vector<Ship>> Ships(6);
     while (dzialanie != 0)
     {
@@ -25,19 +26,22 @@ int main()
         switch (dzialanie) {
         case 2:
             Ships[2].push_back(Ship(2));
+            howMuchShips++;
             break;
         case 3:
             Ships[3].push_back(Ship(3));
+            howMuchShips++;
             break;
         case 4:
             Ships[4].push_back(Ship(4));
+            howMuchShips++;
             break;
         case 5:
             Ships[5].push_back(Ship(5));
+            howMuchShips++;
             break;
         }
     }
-
     Board B;
     Board A;
     B.Print();
@@ -54,25 +58,92 @@ int main()
     B.Print();
     std::cout << "Plansza gracza A:------------------------------------------->\n";
     A.Print();
-
-    int czyjaKolej = 1;
-    bool isSink = false;
-    A.Id = 'A';
-    B.Id = 'B';
-    while (!isSink)
+    std::cout << "Wybierz tryb gry\n1->gra dla dwóch osób\n2->gra z komputerem\n3->gra komputera z komputerem\n";
+    int mode;
+    std::cin >> mode;
+    switch (mode)
     {
-        if (czyjaKolej>0)
+    case 1:
+    {
+        int czyjaKolej = 1;
+        bool isSink = false;
+        A.Id = 'A';
+        B.Id = 'B';
+        while (!isSink)
         {
-            //B.PrintOpponent();
-            while (A.Shot());
+            if (czyjaKolej > 0)
+            {
+                //B.PrintOpponent();
+                while (A.Shot());
+            }
+            else
+            {
+                //A.PrintOpponent();
+                while (B.Shot());
+            }
+            czyjaKolej = -czyjaKolej;
         }
-        else
-        {
-            //A.PrintOpponent();
-            while (B.Shot());
-        }
-        czyjaKolej = -czyjaKolej;
+        break;
     }
+    case 2:
+    {
+        int czyjaKolej = 1;
+        bool isSink = false;
+        A.Id = 'A';
+        B.Id = 'B';
+        while (!isSink)
+        {
+            if (czyjaKolej > 0)
+            {
+                //B.PrintOpponent();
+                while (A.Shot());
+            }
+            else
+            {
+                //A.PrintOpponent();
+                while (B.ShotAutomatically());
+            }
+            czyjaKolej = -czyjaKolej;
+        }
+        break;
+    }
+    case 3:
+    {
+        int czyjaKolej = 1;
+        bool isSink = false;
+        A.Id = 'A';
+        B.Id = 'B';
+        while (!isSink)
+        {
+            if (czyjaKolej > 0)
+            {
+                //B.PrintOpponent();
+                while (A.ShotAutomatically());
+                if (A.SinkedShips == howMuchShips)
+                {
+                    std::cout << "Zwyciestwo gracza A!";
+                    return 0;
+                }
+            }
+            else
+            {
+                //A.PrintOpponent();
+                while (B.ShotAutomatically());
+                if (B.SinkedShips == howMuchShips)
+                {
+                    std::cout << "Zwyciestwo gracza B!";
+                    return 0;
+                }
+            }
+            czyjaKolej = -czyjaKolej;
+        }
+        break;
+    }
+    default:
+        break;
+    }
+
+    return 0;
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
